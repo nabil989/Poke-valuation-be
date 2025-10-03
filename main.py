@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+import json
 import urllib3
 from playwright.sync_api import sync_playwright
 
@@ -48,19 +49,81 @@ def get_id_from_search(card_name):
     return None
 
 
-def get_price_history(id, range="annual"):
+def get_price_history(id, range="annual", dev=False):
     url = f"https://infinite-api.tcgplayer.com/price/history/{id}/detailed?range={range}"
     try:
         resp = requests.get(url, proxies=proxies, timeout=10, headers=headers, verify=False)
-        # print("Status:", resp.status_code)
-        # print("Headers:", resp.headers)
-        # print("Response JSON:", resp.json())
+        if dev:
+            print("Status:", resp.status_code)
+            print("Headers:", resp.headers)
+            print("Response JSON:", resp.json())
         return resp.json()
     except Exception as e:
         return ("error:", e)
     
+def analyze_card(card_history, buy_price, condition="Near Mint"):
+    """
+    card_history: JSON dict from TCGplayer API
+    buy_price: what you paid for the card
+    condition: which condition to analyze (default Near Mint)
+    """
+    if not card_history or "result" not in card_history:
+        return "No data available"
+
+    # Pick condition variant
+    variants = [v for v in card_history["result"] if v.get("condition") == condition]
+    if not variants:
+        return f"No data available for condition {condition}"
     
-print("ivysaur:", get_price_history(get_id_from_search("ivysaur 134/132")))
+    buckets = variants[0].get("buckets", [])
+    if not buckets:
+        return "No price buckets available"
+
+    # Convert strings → floats/ints
+    prices = [float(b["marketPrice"]) for b in buckets if float(b["marketPrice"]) > 0]
+    volumes = [int(b["transactionCount"]) for b in buckets if int(b["transactionCount"]) > 0]
+
+    if not prices:
+        return "No valid market prices available"
+
+    # Most recent = first entry
+    recent_price = prices[0]
+    old_price = prices[-1]
+    trend = (recent_price - old_price) / old_price * 100 if old_price > 0 else 0
+
+    avg_volume = sum(volumes) / len(volumes) if volumes else 0
+    recent_volume = volumes[0] if volumes else 0
+
+    # Decision logic
+    if recent_price >= buy_price * 1.2:
+        decision = "SELL"
+        reason = f"Price is {recent_price:.2f}, at least 20% above your buy price {buy_price:.2f}."
+    elif trend > 5 and recent_volume > avg_volume:
+        decision = "HOLD"
+        reason = f"Price trending up {trend:.1f}% with strong volume."
+    elif trend < -5:
+        decision = "SELL"
+        reason = f"Price trending down {trend:.1f}%."
+    else:
+        decision = "HOLD"
+        reason = f"Price stable at {recent_price:.2f}, no strong signals."
+
+    return {
+        "condition": condition,
+        "decision": decision,
+        "trend_pct": trend,
+        "recent_price": recent_price,
+        "old_price": old_price,
+        "reason": reason,
+    }
+
+card_id = get_id_from_search("parasol lady 255/182")
+card_history = get_price_history(card_id)
+# save to file
+# with open("card_history.json", "w") as f:
+#     json.dump(card_history, f, indent=2)
+print(analyze_card(card_history, 10))
+# print("parasol lady:", get_price_history(get_id_from_search("parasol lady 255/182")))
 
 
 
