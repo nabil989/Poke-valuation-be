@@ -1,29 +1,16 @@
 .env
 __pycache__/
-# Python cache
-__pycache__/
 *.pyc
 *.pyo
 *.pyd
 *.pytest_cache/
 *.coverage
 *.DS_Store
-
-# Virtual environment
 venv/
 ENV/
 env/
-
-# Environment variables (secrets)
 .env
-
-# Jupyter Notebook checkpoints
 .ipynb_checkpoints/
-
-# VSCode settings
 .vscode/
-
-# macOS metadata
 .DS_Store
-
 run.txt
