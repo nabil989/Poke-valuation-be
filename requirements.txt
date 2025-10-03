@@ -4,3 +4,6 @@ idna==3.10
 python-dotenv==1.1.1
 requests==2.32.5
 urllib3==2.5.0
+playwright
+beautifulsoup4
+lxml
