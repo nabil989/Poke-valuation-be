@@ -43,9 +43,7 @@ def get_id_from_search(card_name: str):
         page = browser.new_page()
         page.goto(search_url, timeout=60000)
 
-        # wait for product link
         page.wait_for_selector("a[href^='/product/']", timeout=60000)
-
         href = page.query_selector("a[href^='/product/']").get_attribute("href")
         browser.close()
 
@@ -71,7 +69,7 @@ def get_price_history(product_id: str, range="annual", dev=False):
 
 
 # ---------- Feature Engineering ----------
-def build_features(buckets, buy_price: float):
+def build_features(buckets, buy_price: float | None):
     """Convert price history buckets into numeric features."""
     prices = [float(b["marketPrice"]) for b in buckets if b.get("marketPrice")]
     volumes = [int(b["transactionCount"]) for b in buckets if b.get("transactionCount")]
@@ -82,11 +80,13 @@ def build_features(buckets, buy_price: float):
     recent_price = prices[0]
     old_price = prices[-1]
     trend_pct = (recent_price - old_price) / old_price * 100 if old_price > 0 else 0
-
     avg_volume = sum(volumes) / len(volumes) if volumes else 0
     recent_volume = volumes[0] if volumes else 0
     volatility = (max(prices) - min(prices)) / (sum(prices) / len(prices)) * 100 if prices else 0
-    profit_margin = (recent_price - buy_price) / buy_price * 100
+
+    profit_margin = None
+    if buy_price:  # only compute if card was bought
+        profit_margin = (recent_price - buy_price) / buy_price * 100
 
     return {
         "recent_price": recent_price,
@@ -100,21 +100,29 @@ def build_features(buckets, buy_price: float):
 
 
 # ---------- Rule-Based Recommendation ----------
-def rule_based_recommendation(features, buy_price: float):
-    """Basic decision rules for HOLD/SELL."""
+def rule_based_recommendation(features, buy_price: float | None):
+    """Decision rules for HOLD/SELL. Adapts if buy_price is missing (pulled card)."""
     recent = features["recent_price"]
     trend = features["trend_pct"]
-    profit = features["profit_margin"]
     recent_volume = features["recent_volume"]
     avg_volume = features["avg_volume"]
 
-    if profit >= 20:
-        return "SELL", f"Price is ${recent:.2f}, profit margin {profit:.1f}%."
-    if trend < -5:
-        return "SELL", f"Price trending down {trend:.1f}%."
-    if trend > 5 and recent_volume > avg_volume:
-        return "HOLD", f"Price rising {trend:.1f}% with strong demand."
-    return "HOLD", f"Price stable at ${recent:.2f}, no strong signals."
+    if buy_price:  # Bought directly
+        profit = features["profit_margin"]
+        if profit >= 20:
+            return "SELL", f"Price is ${recent:.2f}, profit margin {profit:.1f}%."
+        if trend < -5:
+            return "SELL", f"Price trending down {trend:.1f}%."
+        if trend > 5 and recent_volume > avg_volume:
+            return "HOLD", f"Price rising {trend:.1f}% with strong demand."
+        return "HOLD", f"Stable at ${recent:.2f}, no strong signals."
+
+    else:  # Pulled from a pack
+        if trend > 5 and recent_volume > avg_volume:
+            return "HOLD", f"Trending up {trend:.1f}% with strong demand."
+        if trend < -5:
+            return "SELL", f"Trending down {trend:.1f}%, value may keep dropping."
+        return "HOLD", f"Stable at ${recent:.2f}, no strong signals."
 
 
 # ---------- AI Summarizer ----------
@@ -125,15 +133,24 @@ def ai_recommendation(card_name: str, features: dict, decision: str, reason: str
     Features: {features}
     Rule-based decision: {decision} ({reason}).
 
-    Please provide a concise one-sentence recommendation for a Pokémon card trader
-    about whether to SELL or HOLD this card.
+    Provide a concise recommendation for a Pokémon card trader
+    about whether to SELL or HOLD this card, assuming it was {'bought' if features.get("profit_margin") is not None else 'pulled from a pack'}.
     """
     response = model.generate_content(prompt)
     return response.text
 
+
+# ---------- Main ----------
 def main():
-    card_name = input("Enter card name: ")
-    buy_price = float(input("Enter your buy price: "))
+    card_name = input("Enter card name: ").strip()
+    mode = input("Did you buy this card or pull it from a pack? (buy/pull): ").strip().lower()
+
+    buy_price = None
+    if mode == "buy":
+        try:
+            buy_price = float(input("Enter your buy price: "))
+        except ValueError:
+            print("Invalid buy price. Defaulting to None.")
 
     card_id = get_id_from_search(card_name)
     if not card_id:
