@@ -1,0 +1,188 @@
+Bulbasaur 001/132
+Ivysaur 002/132
+Mega Venusaur ex 003/132
+Exeggcute 004/132
+Exeggutor 005/132
+Tangela 006/132
+Tangrowth 007/132
+Chikorita 008/132
+Bayleef 009/132
+Meganium 010/132
+Shuckle 011/132
+Celebi 012/132
+Seedot 013/132
+Nuzleaf 014/132
+Shiftry 015/132
+Nincada 016/132
+Ninjask 017/132
+Dhelmise 018/132
+Vulpix 019/132
+Ninetales 020/132
+Numel 021/132
+Mega Camerupt ex 022/132
+Litleo 023/132
+Pyroar 024/132
+Volcanion 025/132
+Scorbunny 026/132
+Raboot 027/132
+Cinderace 028/132
+Sizzlipede 029/132
+Centiskorch 030/132
+Chi-Yu 031/132
+Mantine 032/132
+Corphish 033/132
+Kyogre 034/132
+Snover 035/132
+Mega Abomasnow ex 036/132
+Clauncher 037/132
+Clawitzer 038/132
+Sobble 039/132
+Drizzile 040/132
+Inteleon 041/132
+Snom 042/132
+Frosmoth 043/132
+Eiscue 044/132
+Magnemite 045/132
+Magneton 046/132
+Magnezone 047/132
+Raikou 048/132
+Electrike 049/132
+Mega Manectric ex 050/132
+Pachirisu 051/132
+Helioptile 052/132
+Heliolisk 053/132
+Abra 054/132
+Kadabra 055/132
+Alakazam 056/132
+Jynx 057/132
+Ralts 058/132
+Kirlia 059/132
+Mega Gardevoir ex 060/132
+Shedinja 061/132
+Spoink 062/132
+Grumpig 063/132
+Xerneas 064/132
+Greavard 065/132
+Houndstone 066/132
+Gimmighoul 067/132
+Sandshrew 068/132
+Sandslash 069/132
+Onix 070/132
+Tyrogue 071/132
+Makuhita 072/132
+Hariyama 073/132
+Lunatone 074/132
+Solrock 075/132
+Riolu 076/132
+Mega Lucario ex 077/132
+Croagunk 078/132
+Toxicroak 079/132
+Marshadow 080/132
+Stonjourner 081/132
+Nacli 082/132
+Naclstack 083/132
+Garganacl 084/132
+Crawdaunt 085/132
+Mega Absol ex 086/132
+Spiritomb 087/132
+Yveltal 088/132
+Nickit 089/132
+Thievul 090/132
+Shroodle 091/132
+Grafaiai 092/132
+Steelix 093/132
+Mega Mawile ex 094/132
+Dialga 095/132
+Tinkatink 096/132
+Tinkatuff 097/132
+Tinkaton 098/132
+Gholdengo 099/132
+Mega Latias ex 100/132
+Latios 101/132
+Spearow 102/132
+Fearow 103/132
+Mega Kangaskhan ex 104/132
+Delibird 105/132
+Miltank 106/132
+Buneary 107/132
+Lopunny 108/132
+Yungoos 109/132
+Gumshoos 110/132
+Stufful 111/132
+Bewear 112/132
+Acerola's Mischief 113/132
+Boss's Orders 114/132
+Energy Switch 115/132
+Fighting Gong 116/132
+Forest of Vitality 117/132
+Iron Defender 118/132
+Lillie's Determination 119/132
+Lt. Surge's Bargain 120/132
+Mega Signal 121/132
+Mystery Garden 122/132
+Pokémon Center Lady 123/132
+Premium Power Pro 124/132
+Rare Candy 125/132
+Repel 126/132
+Risky Ruins 127/132
+Strange Timepiece 128/132
+Surfing Beach 129/132
+Switch 130/132
+Ultra Ball 131/132
+Wally's Compassion 132/132
+Bulbasaur 133/132
+Ivysaur 134/132
+Exeggutor 135/132
+Shuckle 136/132
+Ninjask 137/132
+Vulpix 138/132
+Litleo 139/132
+Snover 140/132
+Clawitzer 141/132
+Inteleon 142/132
+Helioptile 143/132
+Shedinja 144/132
+Houndstone 145/132
+Marshadow 146/132
+Garganacl 147/132
+Spiritomb 148/132
+Shroodle 149/132
+Steelix 150/132
+Spearow 151/132
+Delibird 152/132
+Gumshoos 153/132
+Stufful 154/132
+Mega Venusaur ex 155/132
+Mega Camerupt ex 156/132
+Mega Abomasnow ex 157/132
+Mega Manectric ex 158/132
+Mega Gardevoir ex 159/132
+Mega Lucario ex 160/132
+Mega Absol ex 161/132
+Mega Mawile ex 162/132
+Mega Latias ex 163/132
+Mega Kangaskhan ex 164/132
+Acerola's Mischief 165/132
+Air Balloon 166/132
+Buddy-Buddy Poffin 167/132
+Fighting Gong 168/132
+Lillie's Determination 169/132
+Lt. Surge's Bargain 170/132
+Mega Signal 171/132
+Mystery Garden 172/132
+Night Stretcher 173/132
+Premium Power Pro 174/132
+Rare Candy 175/132
+Wally's Compassion 176/132
+Mega Venusaur ex 177/132
+Mega Gardevoir ex 178/132
+Mega Lucario ex 179/132
+Mega Absol ex 180/132
+Mega Latias ex 181/132
+Mega Kangaskhan ex 182/132
+Acerola's Mischief 183/132
+Lillie's Determination 184/132
+Lt. Surge's Bargain 185/132
+Wally's Compassion 186/132
+Mega Gardevoir ex 187/132
+Mega Lucario ex 188/132

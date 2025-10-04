@@ -1,6 +1,8 @@
 import os
 import requests
 import json
+import time
+import re
 import urllib3
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
@@ -9,7 +11,6 @@ import google.generativeai as genai
 # silence SSL warnings for dev
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# load environment variables
 load_dotenv()
 
 # proxy config
@@ -35,22 +36,62 @@ model = genai.GenerativeModel("gemini-flash-latest")
 
 
 # ---------- Scraping ----------
-def get_id_from_search(card_name: str):
-    """Search TCGPlayer for a card and return its product ID."""
-    search_url = f"https://www.tcgplayer.com/search/all/product?q={card_name.replace(' ', '%20')}"
+def get_id_from_search(card_name, set_hint="Mega Evolution"):
+    """Search TCGPlayer for a card, retrying with fallback queries and prioritizing the right set."""
+    search_variants = [
+        card_name,
+        f"{card_name} {set_hint}",
+        f"{card_name} ME01",
+    ]
+
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
-        page.goto(search_url, timeout=60000)
 
-        page.wait_for_selector("a[href^='/product/']", timeout=60000)
-        href = page.query_selector("a[href^='/product/']").get_attribute("href")
+        for query in search_variants:
+            search_url = f"https://www.tcgplayer.com/search/pokemon/product?q={query.replace(' ', '%20')}"
+            print(f"🔍 Searching: {query}")
+            try:
+                page.goto(search_url, timeout=90000)
+                # Wait for search results section (instead of just a link)
+                page.wait_for_selector("div[class*='search-result']", timeout=20000)
+
+                # Scroll to load more results
+                for _ in range(3):
+                    page.mouse.wheel(0, 800)
+                    time.sleep(0.5)
+
+                links = page.query_selector_all("a[href^='/product/']")
+                if not links:
+                    print(f"No results visible for {query}, retrying...")
+                    continue
+
+                best_match = None
+                for link in links:
+                    href = link.get_attribute("href")
+                    text = link.inner_text().lower()
+
+                    if set_hint.lower() in text or "me01" in text:
+                        best_match = href
+                        break
+
+                if not best_match and links:
+                    best_match = links[0].get_attribute("href")
+
+                if best_match:
+                    m = re.search(r"/product/(\d+)", best_match)
+                    if m:
+                        product_id = m.group(1)
+                        browser.close()
+                        return product_id
+
+            except Exception as e:
+                print(f"⚠️ Error searching {query}: {e}")
+                continue
+
         browser.close()
 
-        if href and href.startswith("/product/"):
-            parts = href.split("/")
-            if len(parts) > 2:
-                return parts[2]  # product ID
+    print(f"❌ Could not find ID for {card_name}")
     return None
 
 
